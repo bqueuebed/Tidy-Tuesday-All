@@ -1,0 +1,41 @@
+---
+title: "Tidy Tuesday: Boxing Day!"
+author: "Barron Brothers"
+format: pdf
+execute: 
+  warning: FALSE
+  message: FALSE
+editor: source
+---
+
+```{r load-packages}
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+library(knitr)
+library(kableExtra)
+```
+
+
+```{r load-data}
+cran_all = 
+  readr::read_rds("https://zenodo.org/records/7414296/files/pkgstats-CRAN-all.Rds?download=1")
+```
+
+# EDA
+
+First, let's focus on the lines of code that have functional content in them, which would exclude blank and comment lines. This can control for the style of coding that each creator has---i.e. how much commenting (or lack thereof) they do. This variable will be stored as `code_lines_[directory]` = `loc_[directory]` - (`blank_lines_[directory]` + `comment_lines_[directory]` for each of the five directories present: /R as `_R`, /src as `_src`, /inst/include as `_inst`, /vignettes as `_vignettes`, and /tests as `_tests`.
+
+```{r code-lines}
+cran_all |>
+  mutate(
+    code_lines_R = loc_R - (blank_lines_R + comment_lines_R),
+    code_lines_src = loc_src - (blank_lines_src + comment_lines_src),
+    code_lines_inst = loc_inst - (blank_lines_inst + comment_lines_inst),
+    code_lines_vignettes = 
+      loc_vignettes - (blank_lines_vignettes + comment_lines_vignettes),
+    code_lines_tests = loc_tests - (blank_lines_tests + comment_lines_tests)
+  )
+```
+
+In the analysis, it might also be wise to control for the length of lines in the code given---again, accounting for different coders' styles and formatting preferences. 
