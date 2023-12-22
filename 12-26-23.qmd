@@ -27,7 +27,7 @@ cran_all =
 First, let's focus on the lines of code that have functional content in them, which would exclude blank and comment lines. This can control for the style of coding that each creator has---i.e. how much commenting (or lack thereof) they do. This variable will be stored as `code_lines_[directory]` = `loc_[directory]` - (`blank_lines_[directory]` + `comment_lines_[directory]` for each of the five directories present: /R as `_R`, /src as `_src`, /inst/include as `_inst`, /vignettes as `_vignettes`, and /tests as `_tests`.
 
 ```{r code-lines}
-cran_all |>
+cran_all = cran_all |>
   mutate(
     code_lines_R = loc_R - (blank_lines_R + comment_lines_R),
     code_lines_src = loc_src - (blank_lines_src + comment_lines_src),
@@ -38,7 +38,16 @@ cran_all |>
   )
 ```
 
-In the analysis, it might also be wise to control for the length of lines in the code given---again, accounting for different coders' styles and formatting preferences. 
+In the analysis, it might also be wise to control for the length of lines in the code given---again, accounting for different coders' styles and formatting preferences. We don't have any variable indicating line length, but we do have the opposite---`rel_space_[directory]`---for each of the five directories. `rel_space_[directory]` lists the percentage of white space in a certain document. To account for this, variables will be mutated into the dataset with the formula: `space_lines_[directory]` = `code_lines_[directory]` * `rel_space_[directory]` for each of the five directories. 
 
+```{r}
+cran_all |>
+  mutate(
+    space_lines_R = code_lines_R * rel_space_R,
+    space_lines_src = code_lines_src * rel_space_src, 
+    space_lines_inst = code_lines_inst * rel_space_inst,
+    space_lines_vignettes = code_lines_vignettes * rel_space_vignettes,
+    space_lines_tests = code_lines_tests * rel_space_tests
+  )
+```
 
-aiwjsdfpojaspodjfapodsijf
